@@ -1,107 +1,39 @@
 ---
-# Source: website/templates/serviceaccount.yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: release-name-website
-  labels:
-    helm.sh/chart: website-0.1.0
-    app.kubernetes.io/name: website
-    app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
-automountServiceAccountToken: true
----
-# Source: website/templates/service.yaml
+# Source: rain-barrel-automation/templates/database/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: release-name-website
-  labels:
-    helm.sh/chart: website-0.1.0
-    app.kubernetes.io/name: website
-    app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
+  name: rba-db-service
+  labels:    
+    environment: prod
+    app: rain
+    app.kuberenetes.io/name: rba-db-service
 spec:
   type: LoadBalancer
   ports:
-    - port: 80
-      targetPort: http
+    - name: postgres
+      port: 5432
+      targetPort: 5432
       protocol: TCP
-      name: http
   selector:
-    app.kubernetes.io/name: website
-    app.kubernetes.io/instance: release-name
+    cnpg.io/cluster: rba-db-cluster
+    cnpg.io/instanceRole: primary
 ---
-# Source: website/templates/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
+# Source: rain-barrel-automation/templates/database/cluster.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
 metadata:
-  name: release-name-website
-  labels:
-    helm.sh/chart: website-0.1.0
-    app.kubernetes.io/name: website
-    app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
+  name: rba-db-cluster
+  labels:    
+    environment: prod
+    app: rain
+    app.kuberenetes.io/name: rba-db-cluster
+
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: website
-      app.kubernetes.io/instance: release-name
-  template:
-    metadata:
-      labels:
-        helm.sh/chart: website-0.1.0
-        app.kubernetes.io/name: website
-        app.kubernetes.io/instance: release-name
-        app.kubernetes.io/version: "1.16.0"
-        app.kubernetes.io/managed-by: Helm
-    spec:
-      serviceAccountName: release-name-website
-      containers:
-        - name: website
-          image: "nginx:1.16.0"
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-          resources:
-            limits:
-              cpu: 100m
-              memory: 128Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
----
-# Source: website/templates/tests/test-connection.yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: "release-name-website-test-connection"
-  labels:
-    helm.sh/chart: website-0.1.0
-    app.kubernetes.io/name: website
-    app.kubernetes.io/instance: release-name
-    app.kubernetes.io/version: "1.16.0"
-    app.kubernetes.io/managed-by: Helm
-  annotations:
-    "helm.sh/hook": test
-spec:
-  containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['release-name-website:80']
-  restartPolicy: Never
+  instances: 2
+
+  storage:
+    size: 100M
+  
+  monitoring:
+    enablePodMonitor: true

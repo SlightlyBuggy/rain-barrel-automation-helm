@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.services.db.service.serviceName }}
+  labels: {{- include "dbservice.labels" . | indent 4}}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    cnpg.io/cluster: rba-db-cluster
+    cnpg.io/instanceRole: primary
