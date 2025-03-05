@@ -3,13 +3,10 @@ kind: Cluster
 metadata:
   name: {{ .Values.services.db.cluster.clusterName }}
   labels: {{- include "dbcluster.labels" . | indent 4 }}
-
 spec:
   instances: {{ .Values.services.db.cluster.instances }}
-
   storage:
     size: {{ .Values.services.db.cluster.size }}
-  
   monitoring:
     enablePodMonitor: {{ .Values.services.db.cluster.monitoring }}
     

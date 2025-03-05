@@ -5,7 +5,7 @@
 
 globals:
   environment: prod
-  appname: rain
+  appname: rain-barrel-automation
 
 services:
   web:
@@ -25,7 +25,19 @@ services:
     cluster:
       clusterName: rba-db-cluster
       instances: 2
-      size: 100M
+      size: 1Gi
       monitoring: true
     service:
       serviceName: rba-db-service
+  mqtt:
+    broker:
+      brokerName: mqtt-broker
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    service:
+      serviceName: mqtt-service

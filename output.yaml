@@ -1,4 +1,14 @@
 ---
+# Source: rain-barrel-automation/templates/mosquitto/config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mosquitto-config
+data:
+  mosquitto.conf: |
+    listener 1883 0.0.0.0
+    allow_anonymous true
+---
 # Source: rain-barrel-automation/templates/database/service.yaml
 apiVersion: v1
 kind: Service
@@ -6,7 +16,7 @@ metadata:
   name: rba-db-service
   labels:    
     environment: prod
-    app: rain
+    app: rain-barrel-automation
     app.kuberenetes.io/name: rba-db-service
 spec:
   type: LoadBalancer
@@ -19,6 +29,67 @@ spec:
     cnpg.io/cluster: rba-db-cluster
     cnpg.io/instanceRole: primary
 ---
+# Source: rain-barrel-automation/templates/mosquitto/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: mqtt-service
+  labels:    
+    environment: prod
+    app: rain-barrel-automation
+    app.kuberenetes.io/name: mqtt-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: mosquitto
+      port: 1883
+      targetPort: 1883
+      protocol: TCP
+  selector:    
+    app.kuberenetes.io/name: mqtt-broker
+---
+# Source: rain-barrel-automation/templates/mosquitto/deployment.yaml
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: mqtt-broker-deployment
+  labels:    
+    environment: prod
+    app: rain-barrel-automation
+    app.kuberenetes.io/name: mqtt-broker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:      
+      app.kuberenetes.io/name: mqtt-broker
+  template:
+    metadata:
+      labels:        
+        environment: prod
+        app: rain-barrel-automation
+        app.kuberenetes.io/name: mqtt-broker
+    spec:
+      containers:
+        - name: mosquitto
+          image: eclipse-mosquitto
+          ports:
+          - containerPort: 1883
+          volumeMounts:
+            - name: mosquitto-config
+              mountPath: /mosquitto/config/
+          resources: 
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      volumes:
+        - name: mosquitto-config
+          configMap: 
+            name: mosquitto-config
+            defaultMode: 0644
+---
 # Source: rain-barrel-automation/templates/database/cluster.yaml
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -26,14 +97,11 @@ metadata:
   name: rba-db-cluster
   labels:    
     environment: prod
-    app: rain
+    app: rain-barrel-automation
     app.kuberenetes.io/name: rba-db-cluster
-
 spec:
   instances: 2
-
   storage:
-    size: 100M
-  
+    size: 1Gi
   monitoring:
     enablePodMonitor: true

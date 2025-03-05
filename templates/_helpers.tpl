@@ -12,3 +12,22 @@ app.kuberenetes.io/name: {{ .Values.services.db.service.serviceName }}
 {{- include "global_labels" . }}
 app.kuberenetes.io/name: {{ .Values.services.db.cluster.clusterName }}
 {{- end }}
+
+{{- define "mqttbroker.deploymentlabels" }}
+{{- include "global_labels" . }}
+app.kuberenetes.io/name: {{ .Values.services.mqtt.broker.brokerName }}-deployment
+{{- end }}
+
+{{- define "mqttbroker.matchlabels" }}
+app.kuberenetes.io/name: {{ .Values.services.mqtt.broker.brokerName }}
+{{- end }}
+
+{{- define "mqttbroker.brokerlabels" }}
+{{- include "global_labels" . }}
+{{- include "mqttbroker.matchlabels" . }}
+{{- end }}
+
+{{- define "mqttbroker.servicelabels" }}
+{{- include "global_labels" . }}
+app.kuberenetes.io/name: {{ .Values.services.mqtt.service.serviceName }}
+{{- end }}
