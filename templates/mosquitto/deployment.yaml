@@ -1,7 +1,7 @@
-apiVersion: v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mqtt-broker-deployment
+  name: mqtt-broker
   labels: {{- include "mqttbroker.deploymentlabels" . | indent 4 }}
 spec:
   replicas: 1

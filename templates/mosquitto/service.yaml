@@ -11,3 +11,4 @@ spec:
       targetPort: 1883
       protocol: TCP
   selector: {{- include "mqttbroker.matchlabels" . | indent 4 }}
+  loadBalancerIP: {{ .Values.services.mqtt.service.reservedIp }}

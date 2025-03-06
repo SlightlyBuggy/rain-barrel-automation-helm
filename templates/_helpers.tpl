@@ -31,3 +31,28 @@ app.kuberenetes.io/name: {{ .Values.services.mqtt.broker.brokerName }}
 {{- include "global_labels" . }}
 app.kuberenetes.io/name: {{ .Values.services.mqtt.service.serviceName }}
 {{- end }}
+
+{{- define "webapp.deploymentlabels" }}
+{{- include "global_labels" . }}
+app.kuberenetes.io/name: {{ .Values.services.web.app.name }}-deployment
+{{- end }}
+
+{{- define "webapp.matchlabels" }}
+app.kuberenetes.io/name: {{ .Values.services.web.app.name }}
+{{- end }}
+
+{{- define "webapp.podlabels" }}
+{{- include "global_labels" . }}
+{{- include "webapp.matchlabels" . }}
+{{- end }}
+
+{{- define "webapp.servicelabels" }}
+{{- include "global_labels" . }}
+app.kuberenetes.io/name: {{ .Values.services.web.service.serviceName }}
+{{- end }}
+
+{{- define "webapp.image" }}
+{{- $imagename := .Values.services.web.app.image }}
+{{- $imagetag := .Values.services.web.app.tag }}
+{{- printf "%s:%s" $imagename $imagetag }}
+{{- end }}

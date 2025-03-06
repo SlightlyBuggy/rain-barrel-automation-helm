@@ -13,3 +13,4 @@ spec:
   selector:
     cnpg.io/cluster: rba-db-cluster
     cnpg.io/instanceRole: primary
+  loadBalancerIP: {{ .Values.services.db.service.reservedIp }}
