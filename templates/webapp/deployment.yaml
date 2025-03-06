@@ -14,6 +14,10 @@ spec:
       containers:
         - name: django-webapp
           image: {{- include "webapp.image" . | indent 1}}
+          imagePullPolicy: Always
           ports:
-          - containerPort: 80
+          - containerPort: 8000
+          env:
+          - name: BROKER_URL
+            value: {{ .Values.services.mqtt.service.serviceName }}.default.svc.cluster.local
           resources: {{ .Values.services.web.app.resources | toYaml | nindent 12 }}

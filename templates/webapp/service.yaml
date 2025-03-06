@@ -8,7 +8,7 @@ spec:
   ports:
     - name: webapp
       port: 80
-      targetPort: 80
+      targetPort: 8000
       protocol: TCP
   selector: {{- include "webapp.matchlabels" . | indent 4 }}
-  # loadBalancerIP: {{ .Values.services.mqtt.service.reservedIp }}
+  loadBalancerIP: {{ .Values.services.web.service.reservedIp }}

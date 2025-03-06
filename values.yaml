@@ -13,12 +13,13 @@ services:
       listenPort: 80
       type: LoadBalancer
       serviceName: webapp-service
+      reservedIp: 192.168.0.132
 
     app:
       listenPort: 8080
       name: rba-django-app
       image: myersc6535/rain-barrel-automation
-      tag: 0.0.1
+      tag: 0.0.4
       resources:
         limits:
           cpu: 100m
@@ -47,4 +48,4 @@ services:
           memory: 128Mi
     service:
       serviceName: mqtt-service
-      reservedIp: 192.168.0.129
+      reservedIp: 192.168.0.130
