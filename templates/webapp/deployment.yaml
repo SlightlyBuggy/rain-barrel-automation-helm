@@ -20,4 +20,19 @@ spec:
           env:
           - name: BROKER_URL
             value: {{ .Values.services.mqtt.service.serviceName }}.default.svc.cluster.local
+          - name: DATABASE_ENGINE
+            value: django.db.backends.postgresql
+          - name: DATABASE_NAME
+            value: app
+          - name: DATABASE_USER
+            value: app
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: rba-db-cluster-app
+                key: password
+          - name: DATABASE_HOST
+            value: {{ .Values.services.db.service.internalRWServiceName }}.default.svc.cluster.local
+          - name: DATABASE_PORT
+            value: "5432"
           resources: {{ .Values.services.web.app.resources | toYaml | nindent 12 }}

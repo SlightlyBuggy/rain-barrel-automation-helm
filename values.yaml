@@ -7,6 +7,7 @@ globals:
   environment: prod
   appname: rain-barrel-automation
 
+
 services:
   web:
     service:
@@ -19,11 +20,11 @@ services:
       listenPort: 8080
       name: rba-django-app
       image: myersc6535/rain-barrel-automation
-      tag: 0.0.4
+      tag: 0.0.5
       resources:
         limits:
-          cpu: 100m
-          memory: 128Mi
+          cpu: 500m
+          memory: 512Mi
         requests:
           cpu: 100m
           memory: 128Mi
@@ -35,6 +36,7 @@ services:
       monitoring: true
     service:
       serviceName: rba-db-service
+      internalRWServiceName: rba-db-cluster-rw
       reservedIp: 192.168.0.129
   mqtt:
     broker:
