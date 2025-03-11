@@ -20,7 +20,7 @@ services:
       listenPort: 8080
       name: rba-django-app
       image: myersc6535/rain-barrel-automation
-      tag: 0.0.5
+      tag: 0.0.7
       resources:
         limits:
           cpu: 500m
@@ -28,6 +28,16 @@ services:
         requests:
           cpu: 100m
           memory: 128Mi
+    cronjobs:
+      image: curlimages/curl:8.12.1
+      pingDevices:
+        name: ping-devices
+        schedule: 0 */1 * * *
+
+      getWeather:
+        name: get-weather-observations
+        schedule: "30 * * * *"
+
   db:
     cluster:
       clusterName: rba-db-cluster

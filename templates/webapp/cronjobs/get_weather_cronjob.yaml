@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ping-devices
+spec:
+  schedule: {{ .Values.services.web.cronjobs.getWeather.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: ping-devices
+            image: {{ .Values.services.web.cronjobs.image }}
+            args:
+            - /bin/sh
+            - -ec
+            - curl {{ .Values.services.web.service.serviceName }}.default.svc.cluster.local/api/get_precip_observations
