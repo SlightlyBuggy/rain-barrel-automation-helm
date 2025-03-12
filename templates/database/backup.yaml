@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata: 
+  name: {{ .Values.services.db.cluster.clusterName }}-backup
+spec:
+  schedule: {{ .Values.services.db.cluster.backup.schedule }}
+  suspend: {{ .Values.services.db.cluster.backup.supend }}
+  backupOwnerReference: self
+  cluster:
+    name: {{ .Values.services.db.cluster.clusterName }}

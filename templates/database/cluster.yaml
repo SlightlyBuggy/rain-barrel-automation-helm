@@ -7,6 +7,13 @@ spec:
   instances: {{ .Values.services.db.cluster.instances }}
   storage:
     size: {{ .Values.services.db.cluster.size }}
+  backup:
+    barmanObjectStore:
+      destinationPath: "gs://rain-barrel-automation/database-backups"
+      googleCredentials:
+        applicationCredentials:
+          name: backup-creds
+          key: gcsCredentials
   monitoring:
     enablePodMonitor: {{ .Values.services.db.cluster.monitoring }}
     

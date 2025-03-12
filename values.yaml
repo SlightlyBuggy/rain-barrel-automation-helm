@@ -44,6 +44,9 @@ services:
       instances: 2
       size: 1Gi
       monitoring: true
+      backup:
+        schedule: 0 0 * * *
+        supend: false
     service:
       serviceName: rba-db-service
       internalRWServiceName: rba-db-cluster-rw
