@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: ping-devices
+  name: get-weather
 spec:
   schedule: {{ .Values.services.web.cronjobs.getWeather.schedule | quote }}
   jobTemplate:
@@ -10,7 +10,7 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: ping-devices
+          - name: get-weather
             image: {{ .Values.services.web.cronjobs.image }}
             args:
             - /bin/sh
