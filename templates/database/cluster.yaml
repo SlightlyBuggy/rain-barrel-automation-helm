@@ -3,6 +3,8 @@ kind: Cluster
 metadata:
   name: {{ .Values.services.db.cluster.clusterName }}
   labels: {{- include "dbcluster.labels" . | indent 4 }}
+  annotations:
+    skipWalArchiving: enabled
 spec:
   instances: {{ .Values.services.db.cluster.instances }}
   storage:
@@ -14,6 +16,9 @@ spec:
         applicationCredentials:
           name: backup-creds
           key: gcsCredentials
+      wal:
+        compression: gzip
+        encryption: AES256
   monitoring:
     enablePodMonitor: {{ .Values.services.db.cluster.monitoring }}
     
