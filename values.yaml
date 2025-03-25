@@ -45,7 +45,7 @@ services:
       size: 1Gi
       monitoring: true
       backup:
-        schedule: 0 0 * * 0
+        schedule: 0 0 0 * * 0
         supend: false
     service:
       serviceName: rba-db-service
